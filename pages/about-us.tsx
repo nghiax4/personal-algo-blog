@@ -4,6 +4,9 @@ import { PageLayout, Text, List, Image, LinkTo, Seperator, Slider } from "../src
 import { CURRENT_YEAR } from "../src/constants/appConstants";
 import { iSEO } from "../src/shared/interfaces";
 
+import 'katex/dist/katex.min.css';
+import Latex from 'react-latex-next';
+
 const AboutUs = () => {
     const PAGE_SEO: iSEO = {
         title: 'About Us',
@@ -23,6 +26,11 @@ const AboutUs = () => {
                     </Text>
                     <Text subtitle className='text-xl mb-5'>
                         This is an open source blog template which can help you start a simple static blog.
+                    </Text>
+
+                    <Text>
+                        We give <Latex>{`$e^{-x^2}$`}</Latex>
+                        hell yeah
                     </Text>
 
                     <Text p className='text-lg'>
