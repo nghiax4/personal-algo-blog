@@ -13,12 +13,13 @@ const Article = () => {
       <PageLayout blogcentered>
         <Text title>Introduction</Text>
         <Text p>
-          At this point, almost everyone knows how to calculate <Latex>{`$A^B \\; \\% \\; P$`}</Latex> (where <Latex>{`$\\%$`}</Latex> is the modulo operator) for prime <Latex>{`$P$`}</Latex>. However, it gets much harder to do this when you have to modulo a composite number.
+          At this point, almost everyone knows how to calculate <Latex>{`$A^B \\; \\% \\; P$`}</Latex> (where <Latex>{`$\\%$`}</Latex> is the modulo operator)
+          for prime <Latex>{`$P$`}</Latex>. However, it gets much harder to do this when you have to modulo a composite number.
         </Text>
         <Text p>
-          This article presents 3 approaches to calculate <Latex>{`$A^B \\; \\% \\; M$`}</Latex> for{" "}
-          <Latex>{`$B \\le 10^{10^6}$`}</Latex>, and <Latex>{`$A, M \\le 10^9$`}</Latex> where <Latex>{`$M$`}</Latex> not necessarily prime. We don't need to
-          worry about large <Latex>{`$A$`}</Latex> since we can just take it modulo <Latex>{`$M$`}</Latex>.
+          This article presents 3 approaches to calculate <Latex>{`$A^B \\; \\% \\; M$`}</Latex> for <Latex>{`$B \\le 10^{10^6}$`}</Latex>, and{" "}
+          <Latex>{`$A, M \\le 10^9$`}</Latex> where <Latex>{`$M$`}</Latex> not necessarily prime. We don't need to worry about large <Latex>{`$A$`}</Latex>{" "}
+          since we can just take it modulo <Latex>{`$M$`}</Latex>.
         </Text>
 
         <Text p>
@@ -202,8 +203,8 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
           <li>
             <Text subtitle>Power Tower (Codeforces 906D)</Text>
             <Text p>
-              In order to AC this question, I had to read other's AC'd code, in which they used a pretty creative technique. From my experience, simply
-              following approach 3 doens't work, since you need to compare <Latex>{`$w_{l+1}^{w_{l+2}^{\\dots^{w_r}}}$`}</Latex> with{" "}
+              In order to AC this question, I had to read others' AC'd code, in which they used a pretty creative technique. From my experience, simply
+              following approach 3 doesn't work, since you need to compare <Latex>{`$w_{l+1}^{w_{l+2}^{\\dots^{w_r}}}$`}</Latex> with{" "}
               <Latex>{`$\\phi(M)$`}</Latex>, which is hard. Their technique, however, removes the need for comparison. I'll try to explain it here.
             </Text>
             <Text p>
@@ -273,42 +274,292 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
         </Text>
 
         <Text subtitle>
-          2. <Latex>{`$G(l,r,m) \\equiv w_{l}^{w_{l+1}^{w_{l+2}^{\\dots^{w_{r}}}}} \\; \\left(\\text{mod } M\\right)$`}</Latex>
+          2. <Latex>{`$G(l,r,m) \\equiv w_{l}^{w_{l+1}^{w_{l+2}^{\\dots^{w_{r}}}}} \\; \\left(\\text{mod } m\\right)$`}</Latex>
+        </Text>
+
+        <Text p>I'll first prove the following lemma:</Text>
+
+        <Text p>
+          <Latex>{`$$ \\textbf{Lemma 1: } a^{b \\; @ \\; \\phi(m)} \\; @ \\; m = a^b \\; @ \\; m \\; \\;$$`}</Latex>
+        </Text>
+
+        <Text p>I'll split this into four cases:</Text>
+
+        <List type={ListType.disc}>
+          <li>
+            <Text p>
+              <Latex>{`$a^{b \\; @ \\; \\phi(m)}, a^b \\ge m$`}</Latex>
+            </Text>
+          </li>
+          <li>
+            <Text p>
+              <Latex>{`$a^{b \\; @ \\; \\phi(m)}, a^b \\le m$`}</Latex>
+            </Text>
+          </li>
+          <li>
+            <Text p>
+              <Latex>{`$a^{b \\; @ \\; \\phi(m)} > m, a^b \\le m$`}</Latex>
+            </Text>
+          </li>
+          <li>
+            <Text p>
+              <Latex>{`$a^{b \\; @ \\; \\phi(m)} < m, a^b \\ge m$`}</Latex>
+            </Text>
+          </li>
+        </List>
+
+        <Text p>
+          <b>Case 1, 2</b> are easy to prove, so I will skip it.
         </Text>
 
         <Text p>
-          Recall that: <Latex>{`$$G(l,r,m) = w_l^{G(l+1, r, \\phi(m))} \\; @ \\; m$$`}</Latex>
+          <b>Case 3:</b> <Latex>{`$a^{b \\; @ \\; \\phi(m)} > m, a^b \\le m$`}</Latex>. This is impossible since{" "}
+          <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\le a^b$`}</Latex>. So case 3 never happens.
         </Text>
 
         <Text p>
-          I'll prove by induction. Let <Latex>{`$P(n)$`}</Latex> be the statement "
-          <Latex>{`$G(n,r,m) \\equiv w_{n}^{w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}}} \\; \\left(\\text{mod } m\\right)$`}</Latex>"
-        </Text>
-
-        <Text p>
-          Base case: <Latex>{`$P(n = r)$`}</Latex>. This is trivial. Now let's prove <Latex>{`$P(n)$`}</Latex> given <Latex>{`$P(n+1)$`}</Latex> (yes, induction
-          backwards).
-        </Text>
-
-        <Text p>
-          Case 1: <Latex>{`$w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}} < \\phi(m) \\Rightarrow G(n+1, r, \\phi(m)) = w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}}$`}</Latex>
-        </Text>
-        <Text p>
-          Case 2:{" "}
-          <Latex>{`$w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}} \\ge \\phi(m) \\Rightarrow G(n+1, r, \\phi(m)) = w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}} \\; \\% \\; \\phi(m) + k \\cdot \\phi(m)$`}</Latex>
+          <b>Case 4:</b> <Latex>{`$a^{b \\; @ \\; \\phi(m)} < m, a^b \\ge m$`}</Latex>
         </Text>
 
         <List type={ListType.none}>
-          <Text p>
-            Note that <Latex>{`$k \\ge 1$`}</Latex> because of the nature of the <Latex>{`$@$`}</Latex> operator.
-          </Text>
-          <Text p>
-            <Latex>{`$$w_n^{G(n+1, r, \\phi(m))} = w_n^{\\left( w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}} \\; \\% \\; \\phi(m) + k \\cdot \\phi(m) \\right)} = w_n^{\\left( w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}} \\; \\% \\; \\phi(m) \\right)} w_n^{k \\cdot \\phi(m)} \\\\$$`}</Latex>
-          </Text>
-          <Text p>
-            <Latex>{`$$\\equiv w_n^{\\left( w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}} \\; \\% \\; \\phi(m) \\right)} w_n^{\\phi(m)} \\equiv w_{n}^{w_{n+1}^{w_{n+2}^{\\dots^{w_{r}}}}} \\; \\left(\\text{mod } m\\right)$$`}</Latex>
-          </Text>
+          <li>
+            <Text p>
+              Notice that: <Latex>{`$b < \\phi(m)$`}</Latex> would lead to a contradiction. Therefore, <Latex>{`$b \\ge \\phi(m)$`}</Latex>.
+            </Text>
+
+            <Text p>
+              Let <Latex>{`$u, v$`}</Latex> be integers such that:
+            </Text>
+
+            <Text p>
+              <Latex>{`$$
+              \\begin{cases}
+              b = u \\cdot \\phi(m) + v \\\\
+              v = b \\; \\% \\; \\phi(m)
+              \\end{cases}
+              $$`}</Latex>
+            </Text>
+
+            <Text p>
+              This means <Latex>{`$b \\; @ \\; \\phi(m) = \\phi(m) + v$`}</Latex>, which in turn means{" "}
+              <Latex>{`$a^{b \\; @ \\; \\phi(m)} = a^{\\phi(m)} a^v$`}</Latex>.
+            </Text>
+
+            <Text p>
+              Notice that <Latex>{`$a^{\\phi(m)} \\le a^{b \\; @ \\; \\phi(m)} < m \\Rightarrow a < m^{\\frac{1}{\\phi(m)}}$`}</Latex>. Since{" "}
+              <Latex>{`$\\phi(m) \\ge \\sqrt{\\frac{m}{2}}$`}</Latex>, we have:
+            </Text>
+
+            <Text p>
+              <Latex>{`$$a < m^{\\frac{1}{\\phi(m)}} \\le m^{\\frac{1}{\\sqrt{\\frac{m}{2}}}}$$`}</Latex>
+            </Text>
+
+            <Text p>
+              Notice that <Latex>{`$\\max\\left(m^{\\frac{1}{\\sqrt{\\frac{m}{2}}}}\\right) < 3$`}</Latex>, since for{" "}
+              <Latex>{`$f(x) = x^{\\frac{1}{\\sqrt{\\frac{x}{2}}}}$`}</Latex>, <Latex>{`$\\max\\left(f(x)\\right) \\approx 2.831$`}</Latex>.
+            </Text>
+
+            <Text p>
+              Therefore, <Latex>{`$a \\in \\lbrace 1, 2 \\rbrace$`}</Latex>, but since <Latex>{`$a = 1$`}</Latex> would lead to a contradiction, we have{" "}
+              <Latex>{`$a = 2$`}</Latex>.
+            </Text>
+
+            <Text p>
+              Since <Latex>{`$f(x) = x^{\\frac{1}{\\sqrt{\\frac{x}{2}}}} < 2$`}</Latex> for <Latex>{`$x \\ge 80$`}</Latex>, we have{" "}
+              <Latex>{`$1 \\le m \\le 79$`}</Latex>.
+            </Text>
+
+            <Text p>
+              Exhaustively searching over all <Latex>{`$m$`}</Latex>, we see that only <Latex>{`$m = 6$`}</Latex> satisfies{" "}
+              <Latex>{`$2 < m^{\\frac{1}{\\phi(m)}}$`}</Latex>.
+            </Text>
+
+            <Text p>Now, we currently have:</Text>
+
+            <Text p>
+              <Latex>{`$$
+              \\begin{cases}
+              a^{b \\; @ \\; \\phi(m)} < m \\\\
+              a^b \\ge m \\\\
+              a = 2, m = 6
+              \\end{cases}
+              $$`}</Latex>
+            </Text>
+
+            <Text p>
+              <Latex>{`$$
+              \\Rightarrow 
+              \\begin{cases}
+              2^{b \\; @ \\; 2} < 6 \\\\
+              2^b \\ge 6
+              \\end{cases}
+              $$`}</Latex>
+            </Text>
+
+            <Text p>
+              <Latex>{`$$
+              \\Rightarrow 
+              \\begin{cases}
+              b \\; @ \\; 2 < 3 \\\\
+              b \\ge 3
+              \\end{cases}
+              $$`}</Latex>
+            </Text>
+
+            <Text p>
+              <Latex>{`$$
+              \\Rightarrow
+              b \\in \\lbrace 4, 6, 8, 10, 12, \\dots \\rbrace
+              $$`}</Latex>
+            </Text>
+
+            <Text p>
+              Looking at some values of <Latex>{`$b$`}</Latex>:
+            </Text>
+
+            <Text p>
+              <table className="mx-auto" style={{ border: "3px solid white" }}>
+                <tbody>
+                  <tr>
+                    <th style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$b$`}</Latex>
+                    </th>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$4$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$6$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$8$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$12$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$14$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$16$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$18$`}</Latex>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$2^{b \\; @ \\; 2} \\; @ \\; 6$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$2^b \\; @ \\; 6$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                    <td style={{ padding: "10px", border: "1px solid white" }}>
+                      <Latex>{`$10$`}</Latex>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Text>
+
+            <Text p>
+              Therefore, <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\; @ \\; m = a^b \\; @ \\; m$`}</Latex>.
+            </Text>
+          </li>
         </List>
+
+        <Text p>With lemma 1 proven, I will now prove this by induction:</Text>
+
+        <Text p>
+          <Latex>{`$$
+          G(l, r, m) = w_l^{w_{l+1}^{\\dots^{w_r}}} \\; @ \\; m
+          $$`}</Latex>
+        </Text>
+
+        <Text p>
+          Base case: <Latex>{`$l = r$`}</Latex>. This is trivial.
+        </Text>
+
+        <Text p>
+          Now, consider <Latex>{`$G(l-1, r, m)$`}</Latex>:
+        </Text>
+
+        <Text p>
+          <Latex>
+            {`$$
+            G(l-1, r, m) = w_{l-1}^{G(l, r, \\phi(m))} \\; @ \\; m
+            $$`}
+          </Latex>
+        </Text>
+        
+        <Text p>
+          <Latex>
+            {`$$
+            \\Rightarrow G(l-1, r, m) = w_{l-1}^{\\left( w_l^{w_{l+1}^{\\dots^{w_r}}} \\; @ \\; \\phi(m) \\right)} \\; @ \\; m
+            $$`}
+          </Latex>
+        </Text>
+
+        <Text p>
+          By lemma 1, we have:
+          <Latex>
+            {`$$
+            \\Rightarrow G(l-1, r, m) = w_{l-1}^{\\left( w_l^{w_{l+1}^{\\dots^{w_r}}} \\; @ \\; \\phi(m) \\right)} \\; @ \\; m = w_{l-1}^{w_l^{w_{l+1}^{\\dots^{w_r}}}} \\; @ \\; m
+            $$`}
+          </Latex>
+        </Text>
+
+        <Text p>Q.E.D.</Text>
+
       </PageLayout>
     )
 }
