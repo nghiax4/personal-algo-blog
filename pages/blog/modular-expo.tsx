@@ -152,7 +152,7 @@ const Article = () => {
         <Text p>
           Therefore, if <Latex>{`$p > 0$`}</Latex>, then <Latex>{`$A^{p \\cdot \\phi(M)} \\; \\% \\; M = A^{\\phi(M)} \\; \\% \\; M$`}</Latex>.
         </Text>
-        <Text p>I put a link to a proof for this fact at the "Aditional proofs", subsection 1 the end of the article.</Text>
+        <Text p>I put a link to a proof for this fact at the "Additional info", subsection 1 the end of the article.</Text>
         <Text p>So, armed with this fact, we have:</Text>
         <Text p>
           <Latex>{`
@@ -208,6 +208,9 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
               <Latex>{`$\\phi(M)$`}</Latex>, which is hard. Their technique, however, removes the need for comparison. I'll try to explain it here.
             </Text>
             <Text p>
+            Note that this solution will be a bit different from the majority because I made a modification that allowed me to prove the solution's correctness. I wasn't able to do so with others' solution.
+            </Text>
+            <Text p>
               In this problem, the main task is to answer at most <Latex>{`$10^5$`}</Latex> queries of the value{" "}
               <Latex>{`$\\left(w_{l}^{w_{l+1}^{w_{l+2}^{\\dots^{w_{r}}}}}\\right) \\; \\% \\; m$`}</Latex> for some <Latex>{`$l, r$`}</Latex>, given that{" "}
               <Latex>{`$1 \\le w_i \\le 10^9$`}</Latex> and <Latex>{`$1 \\le m \\le 10^5$`}</Latex>.
@@ -216,14 +219,14 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
               Let <Latex>{`$@$`}</Latex> be a binary operation such that:
             </Text>
             <Text p>
-              <Latex>{`$$a \\; @ \\; b = \\begin{cases} a & ,\\text{ if } a < b \\\\ a \\; \\% \\; b + b & ,\\text{ if } a \\ge b \\end{cases}$$`}</Latex>
+              <Latex>{`$$a \\; @ \\; b = \\begin{cases} a & ,\\text{ if } a < 4b \\\\ a \\; \\% \\; b + 3b & ,\\text{ if } a \\ge 4b \\end{cases}$$`}</Latex>
             </Text>
             <Text p>
               Notice that <Latex>{`$@$`}</Latex> is somewhat similar to <Latex>{`$\\%$`}</Latex>, so let's do everything with the <Latex>{`$@$`}</Latex>{" "}
               operator instead of <Latex>{`$\\%$`}</Latex>.
             </Text>
             <Text p>
-              Notice that <Latex>{`$A^B \\equiv A^{B \\; @ \\; \\phi(M)} \\; \\left(\\text{mod } M\\right)$`}</Latex>. This might help building intuition.
+              Notice that <Latex>{`$A^B \\equiv A^{B \\; @ \\; \\phi(M)} \\; \\left(\\text{mod } M\\right)$`}</Latex>. This is probably a reason why some thought of defining a new operator.
             </Text>
             <Text p>
               Let <Latex>{`$G(l, r, m)$`}</Latex> be a function such that:
@@ -231,9 +234,17 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
             <Text p>
               <Latex>{`$$G(l, r, m) = \\begin{cases} w_l^{G(l+1, r, \\phi(m))} \\; @ \\; m & ,\\text{ if } l < r \\\\ w_l \\; @ \\; m & ,\\text{ if } l = r \\end{cases}$$`}</Latex>
             </Text>
+
             <Text p>
-              Now, for a query <Latex>{`$l, r$`}</Latex>, we just need to output <Latex>{`$G(l, r, m) \\; \\% \\; m$`}</Latex>. This might be intuitive, but I
-              think it needs a proof, which I left at section "Addtional proofs", subsection 2 at the end of this post.
+              This function has a nice fact:
+              <Latex>{`$$
+              G(l,r,m) \\equiv w_{l}^{w_{l+1}^{w_{l+2}^{\\dots^{w_{r}}}}} \\; \\left(\\text{mod } m\\right)
+              $$`}</Latex>
+            </Text>
+
+            <Text p>
+              Therefore, for a query <Latex>{`$l, r$`}</Latex>, we just need to output <Latex>{`$G(l, r, m) \\; \\% \\; m$`}</Latex>. This fact feels intuitive,
+              but I think it needs a proof. I put my proof in the "Additional info" section, subsection 2.
             </Text>
             <Text p>
               We're not done, however, since each query would take <Latex>{`$O(r-l)$`}</Latex>, but this is easy to resolve.
@@ -243,24 +254,25 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
               <Latex>{`$G\\left(l+2, r, \\phi(\\phi(m))\\right)$`}</Latex>. Notice that we are repeatedly taking <Latex>{`$\\phi()$`}</Latex> of{" "}
               <Latex>{`$m$`}</Latex>, which will eventually reach <Latex>{`$1$`}</Latex>. Let's write the sequence out:
             </Text>
+
             <Text p>
               <Latex>{`$$\\phi(m), \\phi(\\phi(m)), \\phi(\\phi(\\phi(m))), \\dots, 1$$`}</Latex>
             </Text>
             <Text p>
-              Because <Latex>{`$\\forall n: \\phi(\\phi(n)) \\le \\frac{n}{2}$`}</Latex>, this sequence gets halved at every two steps, making its length at
-              most <Latex>{`$O(\\log m)$`}</Latex>.
+              Because <Latex>{`$\\phi(\\phi(n)) \\le \\frac{n}{2}$`}</Latex>, this sequence gets halved at every two steps, making its length at most{" "}
+              <Latex>{`$O(\\log m)$`}</Latex>.
             </Text>
             <Text p>
-              When we reach <Latex>{`$\\phi(\\phi(\\dots\\phi(m))) = 1$`}</Latex>, we can simply return <Latex>{`$0$`}</Latex>.
+              When we reach <Latex>{`$\\phi(\\phi(\\dots\\phi(m))) = 1$`}</Latex>, we can simply return <Latex>{`$1$`}</Latex>.
             </Text>
             <Text p>
               Here's my Accepted code:{" "}
-              <LinkTo href="https://codeforces.com/contest/906/submission/220680513">https://codeforces.com/contest/906/submission/220680513</LinkTo>.
+              <LinkTo href="https://codeforces.com/contest/906/submission/221139429">https://codeforces.com/contest/906/submission/221139429</LinkTo>.
             </Text>
           </li>
         </List>
 
-        <Text title>Additional proofs</Text>
+        <Text title>Additional info</Text>
 
         <Text subtitle>
           1. <Latex>{`$\\text{For all } u, v, M \\text{ and } v > 0: u^{v \\cdot \\phi(M)} \\equiv u^{\\phi(M)} \\; \\left(\\text{mod} \\; M\\right)$`}</Latex>
@@ -277,289 +289,159 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
           2. <Latex>{`$G(l,r,m) \\equiv w_{l}^{w_{l+1}^{w_{l+2}^{\\dots^{w_{r}}}}} \\; \\left(\\text{mod } m\\right)$`}</Latex>
         </Text>
 
-        <Text p>I'll first prove the following lemma:</Text>
-
         <Text p>
-          <Latex>{`$$ \\textbf{Lemma 1: } a^{b \\; @ \\; \\phi(m)} \\; @ \\; m = a^b \\; @ \\; m \\; \\;$$`}</Latex>
+          Firstly, note that <Latex>{`$\\forall a, b: a \\; @ \\; b \\le b$`}</Latex>
         </Text>
 
-        <Text p>I'll split this into four cases:</Text>
-
-        <List type={ListType.disc}>
-          <li>
-            <Text p>
-              <Latex>{`$a^{b \\; @ \\; \\phi(m)}, a^b \\ge m$`}</Latex>
-            </Text>
-          </li>
-          <li>
-            <Text p>
-              <Latex>{`$a^{b \\; @ \\; \\phi(m)}, a^b \\le m$`}</Latex>
-            </Text>
-          </li>
-          <li>
-            <Text p>
-              <Latex>{`$a^{b \\; @ \\; \\phi(m)} > m, a^b \\le m$`}</Latex>
-            </Text>
-          </li>
-          <li>
-            <Text p>
-              <Latex>{`$a^{b \\; @ \\; \\phi(m)} < m, a^b \\ge m$`}</Latex>
-            </Text>
-          </li>
-        </List>
+        <Text p>Secondly, I'll prove the following lemma:</Text>
 
         <Text p>
-          <b>Case 1, 2</b> are easy to prove, so I will skip it.
+          <Latex>{`$$
+          \\textbf{Lemma 1: } \\forall a, b, m: a^{b \\; @ \\; \\phi(m)} \\; @ \\; m = a^b \\; @ \\; m
+          $$`}</Latex>
         </Text>
 
-        <Text p>
-          <b>Case 3:</b> <Latex>{`$a^{b \\; @ \\; \\phi(m)} > m, a^b \\le m$`}</Latex>. This is impossible since{" "}
-          <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\le a^b$`}</Latex>. So case 3 never happens.
-        </Text>
+        <Text p>I'll split into 4 cases:</Text>
 
         <Text p>
-          <b>Case 4:</b> <Latex>{`$a^{b \\; @ \\; \\phi(m)} < m, a^b \\ge m$`}</Latex>
+          <b>Case 1: </b> <Latex>{`$a^b < 4m, a^{b \\; @ \\; \\phi(m)} < 4m$`}</Latex>
         </Text>
 
         <List type={ListType.none}>
           <li>
             <Text p>
-              Notice that: <Latex>{`$b < \\phi(m)$`}</Latex> would lead to a contradiction. Therefore, <Latex>{`$b \\ge \\phi(m)$`}</Latex>.
+              We can ignore when <Latex>{`$b \\; @ \\; \\phi(m) = b$`}</Latex>, so let's assume{" "}
+              <Latex>{`$b \\; @ \\; \\phi(m) = b \\; \\% \\; \\phi(m) + 3\\phi(m)$`}</Latex>.
             </Text>
 
             <Text p>
-              Let <Latex>{`$u, v$`}</Latex> be integers such that:
-            </Text>
-
-            <Text p>
-              <Latex>{`$$
-              \\begin{cases}
-              b = u \\cdot \\phi(m) + v \\\\
-              v = b \\; \\% \\; \\phi(m)
-              \\end{cases}
-              $$`}</Latex>
-            </Text>
-
-            <Text p>
-              This means <Latex>{`$b \\; @ \\; \\phi(m) = \\phi(m) + v$`}</Latex>, which in turn means{" "}
-              <Latex>{`$a^{b \\; @ \\; \\phi(m)} = a^{\\phi(m)} a^v$`}</Latex>.
-            </Text>
-
-            <Text p>
-              Notice that <Latex>{`$a^{\\phi(m)} \\le a^{b \\; @ \\; \\phi(m)} < m \\Rightarrow a < m^{\\frac{1}{\\phi(m)}}$`}</Latex>. Since{" "}
-              <Latex>{`$\\phi(m) \\ge \\sqrt{\\frac{m}{2}}$`}</Latex>, we have:
-            </Text>
-
-            <Text p>
-              <Latex>{`$$a < m^{\\frac{1}{\\phi(m)}} \\le m^{\\frac{1}{\\sqrt{\\frac{m}{2}}}}$$`}</Latex>
-            </Text>
-
-            <Text p>
-              Notice that <Latex>{`$\\max\\left(m^{\\frac{1}{\\sqrt{\\frac{m}{2}}}}\\right) < 3$`}</Latex>, since for{" "}
-              <Latex>{`$f(x) = x^{\\frac{1}{\\sqrt{\\frac{x}{2}}}}$`}</Latex>, <Latex>{`$\\max\\left(f(x)\\right) \\approx 2.831$`}</Latex>.
-            </Text>
-
-            <Text p>
-              Therefore, <Latex>{`$a \\in \\lbrace 1, 2 \\rbrace$`}</Latex>, but since <Latex>{`$a = 1$`}</Latex> would lead to a contradiction, we have{" "}
-              <Latex>{`$a = 2$`}</Latex>.
-            </Text>
-
-            <Text p>
-              Since <Latex>{`$f(x) = x^{\\frac{1}{\\sqrt{\\frac{x}{2}}}} < 2$`}</Latex> for <Latex>{`$x \\ge 80$`}</Latex>, we have{" "}
-              <Latex>{`$1 \\le m \\le 79$`}</Latex>.
-            </Text>
-
-            <Text p>
-              Exhaustively searching over all <Latex>{`$m$`}</Latex>, we see that only <Latex>{`$m = 6$`}</Latex> satisfies{" "}
-              <Latex>{`$2 < m^{\\frac{1}{\\phi(m)}}$`}</Latex>.
-            </Text>
-
-            <Text p>Now, we currently have:</Text>
-
-            <Text p>
-              <Latex>{`$$
-              \\begin{cases}
-              a^{b \\; @ \\; \\phi(m)} < m \\\\
-              a^b \\ge m \\\\
-              a = 2, m = 6
-              \\end{cases}
-              $$`}</Latex>
+              Therefore, <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\ge a^{3\\phi(m)}$`}</Latex>, which implies that:
             </Text>
 
             <Text p>
               <Latex>{`$$
-              \\Rightarrow 
-              \\begin{cases}
-              2^{b \\; @ \\; 2} < 6 \\\\
-              2^b \\ge 6
-              \\end{cases}
-              $$`}</Latex>
-            </Text>
-
-            <Text p>
-              <Latex>{`$$
-              \\Rightarrow 
-              \\begin{cases}
-              b \\; @ \\; 2 < 3 \\\\
-              b \\ge 3
-              \\end{cases}
-              $$`}</Latex>
-            </Text>
-
-            <Text p>
-              <Latex>{`$$
+              a^{3\\phi(m)} < 4m 
               \\Rightarrow
-              b \\in \\lbrace 4, 6, 8, 10, 12, \\dots \\rbrace
+              a < \\left(4m\\right)^{\\frac{1}{3\\phi(m)}}
               $$`}</Latex>
             </Text>
 
             <Text p>
-              Looking at some values of <Latex>{`$b$`}</Latex>:
+              Since <Latex>{`$\\phi(m) \\ge \\sqrt{\\frac{m}{2}}$`}</Latex>, we have:
             </Text>
 
             <Text p>
-              <table className="mx-auto" style={{ border: "3px solid white" }}>
-                <tbody>
-                  <tr>
-                    <th style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$b$`}</Latex>
-                    </th>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$4$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$6$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$8$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$12$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$14$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$16$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$18$`}</Latex>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$2^{b \\; @ \\; 2} \\; @ \\; 6$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$2^b \\; @ \\; 6$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                    <td style={{ padding: "10px", border: "1px solid white" }}>
-                      <Latex>{`$10$`}</Latex>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <Latex>{`$$\\left( 4m \\right) ^ {\\frac{1}{3\\phi(m)}} \\le \\left(4m\\right)^{\\frac{1}{3\\sqrt{\\frac{m}{2}}}} \\le 2$$`}</Latex>
             </Text>
 
             <Text p>
-              Therefore, <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\; @ \\; m = a^b \\; @ \\; m$`}</Latex>.
+              Therefore, <Latex>{`$a < 2$`}</Latex>, meaning <Latex>{`$a = 1$`}</Latex>, which obviously satisfies the equation we're trying to prove.
             </Text>
           </li>
         </List>
 
-        <Text p>With lemma 1 proven, I will now prove this by induction:</Text>
+        <Text p>
+          <b>Case 2: </b> <Latex>{`$a^b < 4m, a^{b \\; @ \\; \\phi(m)} \\ge 4m$`}</Latex>
+        </Text>
+
+        <List type={ListType.none}>
+          <li>
+            <Text p>
+              Since <Latex>{`$b \\; @ \\; \\phi(m) \\le b \\Rightarrow a^{b \\; @ \\; \\phi(m)} \\le a^b$`}</Latex>, this case never occurs.
+            </Text>
+          </li>
+        </List>
+
+        <Text p>
+          <b>Case 3: </b> <Latex>{`$a^b \\ge 4m, a^{b \\; @ \\; \\phi(m)} \\ge 4m$`}</Latex>
+        </Text>
+
+        <List type={ListType.none}>
+          <li>
+            <Text p>
+              Note that <Latex>{`$a^b \\; \\% \\; m = a^{b \\; @ \\; \\phi(m)} \\; \\% \\; m$`}</Latex>. Therefore,{" "}
+              <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\; @ \\; m = a^b \\; @ \\; m$`}</Latex>.
+            </Text>
+          </li>
+        </List>
+
+        <Text p>
+          <b>Case 4: </b> <Latex>{`$a^b \\ge 4m, a^{b \\; @ \\; \\phi(m)} < 4m$`}</Latex>
+        </Text>
+
+        <List type={ListType.none}>
+          <li>
+            <Text p>
+              Since <Latex>{`$b \\; @ \\; \\phi(m) = b$`}</Latex> would lead to a contradiction, we must have:
+            </Text>
+
+            <Text p>
+              <Latex>{`$$b \\; @ \\; \\phi(m) = b \\; \\% \\; \\phi(m) + 3\\phi(m) $$`}</Latex>
+            </Text>
+
+            <Text p>
+              Therefore, <Latex>{`$a^{b \\; @ \\; \\phi(m)} \\ge a^{3\\phi(m)} \\Rightarrow a < \\left(4m\\right)^{\\frac{1}{3\\phi(m)}}$`}</Latex>. This is the
+              scenario we got when analyzing case 1, and we know it must be that <Latex>{`$a = 1$`}</Latex>, which obviously satisfies the equation we're trying
+              to prove.
+            </Text>
+          </li>
+        </List>
+
+        <Text p>
+          Q.E.D.
+        </Text>
+
+        <Text p>
+          Now, I'm gonna prove the following with induction:
+        </Text>
 
         <Text p>
           <Latex>{`$$
-          G(l, r, m) = w_l^{w_{l+1}^{\\dots^{w_r}}} \\; @ \\; m
+          \\forall m: G(l,r,m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m
           $$`}</Latex>
         </Text>
 
         <Text p>
-          Base case: <Latex>{`$l = r$`}</Latex>. This is trivial.
+          Let <Latex>{`$P(l)$`}</Latex> be the statement "<Latex>{`$\\forall m: G(l,r,m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m$`}</Latex>".
         </Text>
 
         <Text p>
-          Now, consider <Latex>{`$G(l-1, r, m)$`}</Latex>:
+          Base case: <Latex>{`$P(l=r)$`}</Latex>. This is trivially true.
         </Text>
 
         <Text p>
-          <Latex>
-            {`$$
-            G(l-1, r, m) = w_{l-1}^{G(l, r, \\phi(m))} \\; @ \\; m
-            $$`}
-          </Latex>
+          Now let's prove <Latex>{`$P(l)$`}</Latex> given <Latex>{`$P(l+1)$`}</Latex>. We have:
         </Text>
         
         <Text p>
-          <Latex>
-            {`$$
-            \\Rightarrow G(l-1, r, m) = w_{l-1}^{\\left( w_l^{w_{l+1}^{\\dots^{w_r}}} \\; @ \\; \\phi(m) \\right)} \\; @ \\; m
-            $$`}
-          </Latex>
+          <Latex>{`$$
+          P(l+1) \\Rightarrow G(l+1, r, \\phi(m)) = w_{l+1} ^ { w_{l+2} ^ { \\dots ^ { w_r } } } \\; @ \\; \\phi(m)
+          $$`}</Latex>
+        </Text>
+        
+        <Text p>
+          <Latex>{`$$
+          \\Rightarrow G(l, r, m) = w_l^{G(l+1, r, \\phi(m))} = w_l ^ { \\left( w_{l+1} ^ { w_{l+2} ^ { \\dots ^ { w_r } } } \\; @ \\; \\phi(m) \\right)} \\; @ \\; m
+          $$`}</Latex>
         </Text>
 
         <Text p>
-          By lemma 1, we have:
-          <Latex>
-            {`$$
-            \\Rightarrow G(l-1, r, m) = w_{l-1}^{\\left( w_l^{w_{l+1}^{\\dots^{w_r}}} \\; @ \\; \\phi(m) \\right)} \\; @ \\; m = w_{l-1}^{w_l^{w_{l+1}^{\\dots^{w_r}}}} \\; @ \\; m
-            $$`}
-          </Latex>
+          Because of Lemma 1, we have:
         </Text>
 
-        <Text p>Q.E.D.</Text>
+        <Text p>
+          <Latex>{`$$
+          G(l, r, m) = w_l ^ { \\left( w_{l+1} ^ { w_{l+2} ^ { \\dots ^ { w_r } } } \\; @ \\; \\phi(m) \\right)} \\; @ \\; m = w_l ^ {w_{l+1} ^ { w_{l+2} ^ { \\dots ^ { w_r } } } } \\; @ \\; m
+          $$`}</Latex>
+        </Text>
 
+        <Text p>
+          Q.E.D.
+        </Text>
+
+        <Text p>
+          It's clear that <Latex>{`$G(l, r, m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m \\equiv w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\; \\left( \\text{mod } M \\right)   $`}</Latex>. Q.E.D.
+        </Text>
       </PageLayout>
     )
 }
