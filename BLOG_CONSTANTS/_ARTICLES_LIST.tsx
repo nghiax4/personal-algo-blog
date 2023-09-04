@@ -231,6 +231,24 @@ const ARTICLES_LIST: iArticle[] = [
       ogImage: "/public/post-thumbnails/modular-expo.png",
     },
   },
+  {
+    path: "/pages/blog/system-of-congruences.tsx",
+    preview: {
+      author: MAYUR,
+      date: "August 6 2022",
+      articleTitle: "Solving system of congruences",
+      shortIntro:
+        "Methods to tackle system of congruences",
+      tags: "math, modular arithmetics",
+      thumbnail: "/public/post-thumbnails/modular-expo.png",
+      category: "Math",
+    },
+    seo: {
+      keywords:
+        "demo, all components, style guide, styling, css, tailwind css, tailwind, webexpe, webexpe.com, styling tutorial, icons, how to use icons in website",
+      ogImage: "/public/post-thumbnails/modular-expo.png",
+    },
+  },
 ];
 
 export const SORTED_ARTICLES_BY_DATE = ARTICLES_LIST.sort((a, b) =>

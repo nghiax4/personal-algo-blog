@@ -72,7 +72,10 @@ const Article = () => {
                   Notice that a simple upper bound for <Latex>{`$c_t$`}</Latex> is <Latex>{`$c_t \\le c_k \\le \\log_2M$`}</Latex>. This is because:
                 </Text>
                 <Text p>
-                  <Latex>{`$$\\begin{cases} 2 \\le p_k \\\\ p_k^{c_k} \\le M \\end{cases} \\Rightarrow 2^{c_k} \\le p_k^{c_k} \\le M \\Rightarrow 2^{c_k} \\le M \\Rightarrow c_k \\le \\log_2M$$`}</Latex>
+                  <Latex>{`$$\\begin{cases} 2 \\le p_k \\\\ p_k^{c_k} \\le M \\end{cases}$$`}</Latex>
+                </Text>
+                <Text p>
+                  <Latex>{`$$ \\Rightarrow 2^{c_k} \\le p_k^{c_k} \\le M \\\\ \\Rightarrow 2^{c_k} \\le M \\\\ \\Rightarrow c_k \\le \\log_2M $$`}</Latex>
                 </Text>
                 <Text p>
                   This means <Latex>{`$B$`}</Latex> is small (<Latex>{`$B < \\log_2M \\approx 29.897$`}</Latex>), so bruteforcing is enough.
@@ -94,9 +97,9 @@ const Article = () => {
             <Text p>
               Note that <Latex>{`$\\phi(p_t^{c_t}) = p_t^{c_t} - p_t^{c_t-1}$`}</Latex>.
             </Text>
-            <Text p>
-              Therefore,{" "}
-              <Latex>{`$A^B \\; \\% \\; p_t^{c_t} = \\left( A^{B \\; \\% \\; \\left(p_t^{c_t} - p_t^{c_t-1}\\right)}\\right) \\; \\% \\; p_t^{c_t}$`}</Latex>.
+            <Text p>Therefore:</Text>
+            <Text p className="text-lg sm:text-sm">
+              <Latex>{`$$A^B \\; \\% \\; p_t^{c_t} = \\left( A^{B \\; \\% \\; \\left(p_t^{c_t} - p_t^{c_t-1}\\right)}\\right) \\; \\% \\; p_t^{c_t}$$`}</Latex>
             </Text>
           </li>
         </List>
@@ -110,7 +113,7 @@ const Article = () => {
         </Text>
         <Text p>
           Hence,{" "}
-          <Latex>{`$$A^B = A^{b_0 + 10b_1 + 10^2b_2 + \\dots + 10^{k-1}b_{k-1}} = \\prod_{i=0}^{k-1} A^{10^ib_i} = \\prod_{i=0}^{k-1} \\left(A^{10^i}\\right)^{b_i}$$`}</Latex>
+          <Latex>{`$$A^B = A^{b_0 + 10b_1 + 10^2b_2 + \\dots + 10^{k-1}b_{k-1}} \\\\ = \\prod_{i=0}^{k-1} A^{10^ib_i} = \\prod_{i=0}^{k-1} \\left(A^{10^i}\\right)^{b_i}$$`}</Latex>
         </Text>
         <Text p>
           Notice that <Latex>{`$A^{10^i} = A^{10 \\cdot 10^{i-1}} = \\left(A^{10^{i-1}}\\right)^{10}$`}</Latex>. This allows us to caculate{" "}
@@ -208,7 +211,8 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
               <Latex>{`$\\phi(M)$`}</Latex>, which is hard. Their technique, however, removes the need for comparison. I'll try to explain it here.
             </Text>
             <Text p>
-            Note that this solution will be a bit different from the majority because I made a modification that allowed me to prove the solution's correctness. I wasn't able to do so with others' solution.
+              Note that this solution will be a bit different from the majority because I made a modification that allowed me to prove the solution's
+              correctness. I wasn't able to do so with others' solution.
             </Text>
             <Text p>
               In this problem, the main task is to answer at most <Latex>{`$10^5$`}</Latex> queries of the value{" "}
@@ -226,7 +230,8 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
               operator instead of <Latex>{`$\\%$`}</Latex>.
             </Text>
             <Text p>
-              Notice that <Latex>{`$A^B \\equiv A^{B \\; @ \\; \\phi(M)} \\; \\left(\\text{mod } M\\right)$`}</Latex>. This is probably a reason why some thought of defining a new operator.
+              Notice that <Latex>{`$A^B \\equiv A^{B \\; @ \\; \\phi(M)} \\; \\left(\\text{mod } M\\right)$`}</Latex>. This is probably a reason why some
+              thought of defining a new operator.
             </Text>
             <Text p>
               Let <Latex>{`$G(l, r, m)$`}</Latex> be a function such that:
@@ -387,13 +392,9 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
           </li>
         </List>
 
-        <Text p>
-          Q.E.D.
-        </Text>
+        <Text p>Q.E.D.</Text>
 
-        <Text p>
-          Now, I'm gonna prove the following with induction:
-        </Text>
+        <Text p>Now, I'm gonna prove the following with induction:</Text>
 
         <Text p>
           <Latex>{`$$
@@ -402,7 +403,8 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
         </Text>
 
         <Text p>
-          Let <Latex>{`$P(l)$`}</Latex> be the statement "<Latex>{`$\\forall m: G(l,r,m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m$`}</Latex>".
+          Let <Latex>{`$P(l)$`}</Latex> be the statement "
+          <Latex>{`$\\forall m: G(l,r,m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m$`}</Latex>".
         </Text>
 
         <Text p>
@@ -412,22 +414,20 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
         <Text p>
           Now let's prove <Latex>{`$P(l)$`}</Latex> given <Latex>{`$P(l+1)$`}</Latex>. We have:
         </Text>
-        
+
         <Text p>
           <Latex>{`$$
           P(l+1) \\Rightarrow G(l+1, r, \\phi(m)) = w_{l+1} ^ { w_{l+2} ^ { \\dots ^ { w_r } } } \\; @ \\; \\phi(m)
           $$`}</Latex>
         </Text>
-        
+
         <Text p>
           <Latex>{`$$
           \\Rightarrow G(l, r, m) = w_l^{G(l+1, r, \\phi(m))} = w_l ^ { \\left( w_{l+1} ^ { w_{l+2} ^ { \\dots ^ { w_r } } } \\; @ \\; \\phi(m) \\right)} \\; @ \\; m
           $$`}</Latex>
         </Text>
 
-        <Text p>
-          Because of Lemma 1, we have:
-        </Text>
+        <Text p>Because of Lemma 1, we have:</Text>
 
         <Text p>
           <Latex>{`$$
@@ -435,12 +435,12 @@ $$B \\ge \\phi(M) \\Rightarrow A^B \\; \\% \\; M =
           $$`}</Latex>
         </Text>
 
-        <Text p>
-          Q.E.D.
-        </Text>
+        <Text p>Q.E.D.</Text>
 
         <Text p>
-          It's clear that <Latex>{`$G(l, r, m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m \\equiv w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\; \\left( \\text{mod } M \\right)   $`}</Latex>. Q.E.D.
+          It's clear that{" "}
+          <Latex>{`$G(l, r, m) = \\left( w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\right) \\; @ \\; m \\equiv w_l ^ { w_{l+1} ^ { \\dots ^ { w_r } } } \\; \\left( \\text{mod } M \\right)   $`}</Latex>
+          . Q.E.D.
         </Text>
       </PageLayout>
     )
