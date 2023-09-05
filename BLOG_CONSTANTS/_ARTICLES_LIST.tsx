@@ -238,15 +238,15 @@ const ARTICLES_LIST: iArticle[] = [
       date: "August 6 2022",
       articleTitle: "Solving system of congruences",
       shortIntro:
-        "Methods to tackle system of congruences",
+        "Tutorial on solving system of congruences",
       tags: "math, modular arithmetics",
-      thumbnail: "/public/post-thumbnails/modular-expo.png",
+      thumbnail: "/public/post-thumbnails/system-of-congruences.png",
       category: "Math",
     },
     seo: {
       keywords:
         "demo, all components, style guide, styling, css, tailwind css, tailwind, webexpe, webexpe.com, styling tutorial, icons, how to use icons in website",
-      ogImage: "/public/post-thumbnails/modular-expo.png",
+      ogImage: "/public/post-thumbnails/system-of-congruences.png",
     },
   },
 ];
