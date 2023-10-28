@@ -1,0 +1,104 @@
+---
+title: 'Power Tower Modulo (CF 906D) Solution'
+date: '2023-07-15'
+tags: ['modular exponentiation', 'math']
+draft: false
+summary: A crazy modular exponentiation problem with a crazy solution.
+---
+
+## Introduction
+
+This is a difficult problem with a weird trick, and I still don't know how I would come up with it. After reading the AC'd solutions, I want to present my own twist to the solution, as there's a detail in those solutions that I couldn't prove, and I modified it to make it a true theorem. This post also presents it and its proof.
+
+## Prerequisites
+* Modular Arithmetics
+* This theorem for Modular Exponentiation: 
+  $$
+  A^B \equiv
+  \left( \begin{cases}
+  A^B, & \text{if } B < \phi(M) \\
+  A^{B \% \phi(M) + \phi(M)}, & \text{else}
+  \end{cases} \right) \pmod M
+  $$
+
+## The Most Important Theorem (for this problem)
+Let $@$ be a binary operation such that:
+$$
+a @ b = 
+\begin{cases}
+a , & \text{if } a < 4b \\
+a \% b + 3b, & \text{else}
+\end{cases}
+$$
+
+Note that $A^B \equiv A^{B @ \phi(M)} \pmod M$. This is probably why people thought of defining a new operator.
+
+Let $w_l, w_{l+1}, \cdots, w_r$ be the input sequence in the problem. Let $G(l,r,m)$ be a function such that:
+$$
+G(l,r,m) = \begin{cases} w_l^{G(l+1, r, \phi(M))} @ m , & \text{if } l < r \\ w_l @ m, & \text{if } l = r \end{cases}
+$$
+
+The crazy theorem is this:
+$$
+G(l,r,m) \equiv w_l^{w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}}} \pmod m
+$$
+
+Therefore, for a query $l, r$, we just need to output $G(l,r,m) \% m$. While it is true that the recursive function's base case is $l = r$, we can make the it return much sooner.
+
+Note that $G(l,r,m)$ requires the value of $G(l+1, r, \phi(m))$, which in turn needs $G(l+2, r, \phi(\phi(m)))$. So we need the sequence $[m, \phi(m), \phi(\phi(m)), \cdots, 1]$. One can show that the sequence's length is at most $O(\log n)$ based on the fact that $\phi(\phi(m)) \le \frac{m}{2}$.
+
+## Lemma 1 proof
+Before proving this crazy thing, the following lemma is required. Beware that the proof won't isn't clean, as it seems like it is accidentally true.
+
+Firstly, note that $\forall a,b: a @ b \le b$. Secondly, let's prove this lemma first:  
+$$
+\textbf{Lemma 1: } \forall a, b, m: a^{b @ \phi(m)} = a^b @ m
+$$
+
+* ## Case 1: $a^b < 4m, a^{b @ \phi(m)} < 4m$
+  We can ignore when $b @ \phi(m) = b$, so let's assume $b @ \phi(m) = b \% \phi(m) + 3\phi(m)$.
+
+  Therefore, $a^{b @ \phi(m)} \ge a^{3 \phi(m)}$, which implies:
+  $$
+  a^{3 \phi(m)} < 4m \Rightarrow a < \left( 4m \right) ^{\frac{1}{3\phi(m)}}
+  $$
+
+  Since $\phi(m) \ge \sqrt{\frac{m}{2}}$, we have:
+  $$
+  \left( 4m \right)^{\frac{1}{3 \phi(m)}} \le \left( 4m \right)^{\frac{1}{3 \sqrt{\frac{m}{2}}}} \le 2
+  $$
+
+  Therefore, $a < 2$, meaning $a = 1$. The theorem obviously satisfies with $a=1$.
+
+* ## Case 2: $a^b < 4m, a^{b @ \phi(m)} \ge 4m$
+  Since $b @ \phi(m) \le \Rightarrow a^{b @ \phi(m)} \le a^b$. So this case never occurs.
+
+* ## Case 3: $a^b \ge 4m, a^{b @ \phi(m)} \ge 4m$
+  Note that $a^b \% m = a^{b @ \phi(m)} \% m$. So this case automatically satisfies.
+
+* ## Case 4: $a^b \ge 4m, a^{b @ \phi(m)} < 4m$
+  We must have $b @ \phi(m) = b \% \phi(m) + 3\phi(m)$. Therefore, $a^{b @ \phi(m)} \ge a^{3 \phi(m)} \Rightarrow a^{3\phi(m)} < 4m$. This is the scenario we got in case 1, and we know from it that $a=1$, which obviously satisfies the theorem.
+
+Q.E.D.
+
+## Theorem proof
+Let's use induction.
+
+Let $P(l)$ be the statement "$\forall m: G(l,r,m) = \left( w_l^{w_{l+1}^{{\cdots}^{w_r}}} \right) @ m$".
+
+Base case: $P(l=r)$, which is trivially true.
+
+Now let's provee $P(l)$ given $P(l+1)$. We have:
+$$
+P(l+1) \Rightarrow G(l+1, r, \phi(m)) = \left( w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}} \right) @ \phi(m) \\
+\Rightarrow G(l,r,m) = w_l^{G(l+1, r, \phi(m))} = w_l ^ {\left( w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}} \right) @ \phi(m)} @ m
+$$
+
+Because of Lemma 1, this implies:
+$$
+G(l,r,m) = w_l ^ {\left( w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}} \right) @ \phi(m)} @ m = \left( w_l^{w_{l+1}^{{\cdots}^{w_r}}} \right) @ m
+$$
+
+Q.E.D.
+
+Here's my Accepted code: [https://codeforces.com/contest/906/submission/221139429](https://codeforces.com/contest/906/submission/221139429).

@@ -1,0 +1,57 @@
+---
+title: 'Binary exponentiation'
+date: '2022-12-07'
+tags: ['binary', 'math']
+draft: false
+summary: Method to exponentiate numbers fast
+---
+
+## Introduction
+
+This is a quick tutorial on how to calculate $A^B$ in $O(\log B)$ time complexity.
+
+## Prerequisites
+* Binary numbers
+
+## Recursive algorithm
+The recursive algorithm is easy to understand. Let $F(A,B) = A^B$. Then we have:
+$$
+F(A,B) = 
+\begin{cases}
+1 , & \text{if } B = 0 \\
+F(A, \frac{B}{2})^2 , & \text{if } B \text{ even} \\
+A \cdot F(A, B-1) , & \text{if } B \text{ odd}
+\end{cases}
+$$
+
+It's easy to see that in every two steps, the exponent decreases by half, as shown by the following example:
+
+![ExampleDecreaseHalf](/static/images/binary-exponentiation/ExampleDecreaseHalf.png)
+
+## Iterative algorithm
+Recursive algorithms are always a bit slower than iterative ones, so we'd want to figure out how to do this iteratively, which isn't instantly obvious.
+
+Let's say we want to calculate $a^{13}$. Notice that $13 = 1101_2 = 2^0 + 2^2 + 2^3 \Rightarrow a^{13} = a^{2^0} \cdot a^{2^2} \cdot a^{2^3}$. Notice that $a^{2^1}$ is missing because the $1^{th}$ bit of $13$ is disabled.
+
+So, we need to calculate all values of $a^{\text{power of two}}$, then discard the powers of two where the corresponding bit is zero. Luckily, that is simply repeated squaring:
+$$
+\begin{cases}
+a = a^{2^0} \\
+a^2 = a^{2^1} \\
+\left( a^2 \right)^2 = a^{2^2} \\
+\left( \left( a^2 \right)^2 \right)^2 = a^{2^3}
+\end{cases}
+$$
+
+The short implementation is as follows:
+```cpp
+long long binpow(long long a, long long b) {
+    long long res = 1;
+    while (b > 0) {
+        if (b & 1) res = res * a;
+        a = a * a;
+        b >>= 1;
+    }
+    return res;
+}
+```

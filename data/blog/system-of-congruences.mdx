@@ -1,0 +1,265 @@
+---
+title: 'Solving system of congruences'
+date: '2023-04-01'
+tags: ['modular arithmetics', 'math']
+draft: false
+summary: Tutorial on solving system of congruences
+---
+
+## Introduction
+
+This post if a tutorial on how to solve system of congruences using the extended Euclidean Algorithm and thee generalized Chinese Remainder Theorem (CRT). I tried to balance between rigor and simplicity to keep this post as clean as possible.
+
+I first summarize how the Extended Euclidean Algorithm works, then states the generalized CRT, and finally gives an algorithm to solve any system of congruences.
+
+## Prerequisites
+* Basic Modular Arithmetics
+* Euclidean Algorithm (the basic one, not the extended one)
+
+## Extended Euclidean Algorithm
+The Extended Euclidean Algorithm inputs two integers $a,b$, and outputs any integer pair $(x,y)$ such that:
+$$
+\begin{cases}
+ax + by = \gcd(a,b) \\
+x,y \in \mathbb{Z}
+\end{cases}
+$$
+
+Note that such a pair always exists due to Bezout's Lemma.
+
+Let $\text{eGCD}(a,b)$ be a function that returns such a pair $(x,y)$.
+
+The Euclidean Algorithm uses the fact that $gcd(a,b)=gcd(b,a\%b)$. The following is a recursive formula used in the algorithm:
+$$
+\gcd(a,b) =
+\begin{cases}
+a, & \text{if } b = 0 \\
+\gcd(b, a\%b), & \text{else}
+\end{cases}
+$$
+
+Based on this, we can calculate $\text{eGCD}(a,b)$ similarly.
+
+Let $\text{eGCD}(b,a\%b) = (x', y')$. Therefore:
+$$
+bx' + \left( a \, \%\, b \right) y' = \gcd(b, a \, \%\, b) \\
+\Leftrightarrow bx' + \left( a - b \lfloor \frac{a}{b} \rfloor \right) y' = \gcd(a, b) \\
+\Leftrightarrow bx' + ay' - b \lfloor \frac{a}{b} \rfloor y' = \gcd(a, b) \\
+\Leftrightarrow ay' + b \left( x' - \lfloor \frac{a}{b} \rfloor y' \right) = \gcd(a, b)
+$$
+
+This means we can let $\text{eGCD}(a,b) = (y', x' - \lfloor \frac{a}{b} \rfloor y')$.
+
+With this, we can set up a recursive formula for $\text{eGCD}(a,b)$ as follows:
+$$
+\text{eGCD}(a, b) = 
+\begin{cases}
+\left(1, 0\right) & ,\text{if } b = 0 \\
+\left( y', x' - \lfloor \frac{a}{b} \rfloor y' \right) & ,\text{else}
+\end{cases}
+$$
+where $(x', y') = \text{eGCD}(b, a\%b)$.
+
+Based on the above recursive formula, here's code that calcualtes $\text{eGCD}(a,b)$:
+```cpp
+// returns any two integers x, y such that ax + by = gcd(a, b)
+array<int, 2> eGCD(int a, int b) {
+  if (b == 0) return {1, 0};
+  int x = eGCD(b, a % b)[0];
+  int y = eGCD(b, a % b)[1];
+  return {y, x - (a/b) * y};
+}
+```
+
+## Generalized Chinese Remainder Theorem
+This theorem states that given the following system of congruences:
+$$
+\begin{cases}
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2} \\
+x \equiv a_3 \pmod{m_3} \\
+\dots \\
+x \equiv a_n \pmod{m_n}
+\end{cases}
+$$
+
+If the system has a solution $b$, then all of its solutions are congruent to $b$ modulo $\text{lcm}(m_1, m_2, \dots, m_n)$. In other words:
+$$
+\begin{cases}
+x \equiv a_1 \pmod{m_1} \\
+x \equiv a_2 \pmod{m_2} \\
+x \equiv a_3 \pmod{m_3} \\
+\dots \\
+x \equiv a_n \pmod{m_n}
+\end{cases}
+
+\Leftrightarrow
+
+x \equiv b \pmod{\text{lcm}(m_1, m_2, \dots, m_n)}
+$$
+
+So, this theorem tells us that we just need to find one number $b$ that satisfies all the congruences.
+
+The case when the system has no solutions is easy to handle. It has no solutions if and only if an error occurs during the solving process. However, for completeness, the full condition for a system to have solutions is that:
+$$
+\forall i, j: a_i \equiv a_j \pmod {\gcd(m_i, m_j)}
+$$
+
+This condition is stated by [https://brilliant.org/wiki/chinese-remainder-theorem/](https://brilliant.org/wiki/chinese-remainder-theorem/).
+
+## Solving the system
+Note that we can solve the system pair by pair. For example, suppose we have the following system:
+$$
+\begin{cases}
+x \equiv 2 \pmod{6} & (1) \\
+x \equiv 5 \pmod{9} & (2) \\
+x \equiv 8 \pmod{15} & (3)
+\end{cases}
+$$
+
+We can solve $(1)$ and $(2)$ first. Note that $x = 14$ satisfies the first two congruences. Therefore:
+$$
+\begin{cases}
+x \equiv 2 \pmod{6} \\
+x \equiv 5 \pmod{9} \\
+x \equiv 8 \pmod{15}
+\end{cases}
+
+\Leftrightarrow
+
+\begin{cases}
+x \equiv 14 \pmod{\text{lcm}(6, 9)} \\
+x \equiv 8 \pmod{15}
+\end{cases}
+$$
+
+We can continue to solve the final pair by noticing that $x = 68$ satisfies it:
+$$
+\begin{cases}
+x \equiv 14 \pmod{\text{lcm}(6, 9)} \\
+x \equiv 8 \pmod{15}
+\end{cases}
+
+\Leftrightarrow x \equiv 68 \pmod{\text{lcm}(6, 9, 15)} \\
+\Leftrightarrow x \equiv 68 \pmod {90}
+$$
+
+Now, we need to find an algorithm to solve two congruences, which we can repeatedly apply to solve any congruence system. Suppose we have:
+$$
+\begin{cases}
+x \equiv a_1 \pmod {m_1} \\
+x \equiv a_2 \pmod {m_2}
+\end{cases}
+$$
+
+They can be rewritten into:
+$$
+\begin{cases}
+x = a_1 + k_1m_1 \\
+x = a_2 + k_2m_2 \\
+k_1, k_2 \in \mathbb{Z}
+\end{cases} \\
+\Rightarrow a_1 + k_1m_1 = a_2 + k_2m_2 \\
+\Leftrightarrow k_1m_1 + (-k_2)m_2 = a_2 - a_1 \quad (*)
+$$
+
+If we can find integers $k_1, k_2$ that satisfy $(*)$, then $x \equiv a_1 + k_1m_1 \pmod{\text{lcm}(m_1, m_2)}$ is our solution.
+
+To find such integers, first note that they only exist if and only if $\gcd(m_1, m_2) \mid (a_2 - a_1)$. This fact is proven here.
+
+If $\gcd(m_1, m_2) ; \nmid ; (a_2 - a_1)$, then the system has no solution.
+
+Now, to find such integers, first find $k_1', k_2'$ such that $k_1' m_1 + k_2' m_2 = \gcd(m_1, m_2)$, which can be done using the Extended Euclidean Algorithm. Then, doing some algebra:
+
+$$
+k_1' m_1 + k_2' m_2 = \gcd(m_1, m_2)
+
+$$
+
+$$
+\Leftrightarrow
+\left( k_1' m_1 + k_2' m_2 \right) \frac{a_2 - a_1}{\gcd(m_1, m_2)} = \left( \gcd(m_1, m_2) \right) \frac{a_2 - a_1}{\gcd(m_1, m_2)}
+$$
+
+$$
+\Leftrightarrow
+\frac{k_1' \left( a_2 - a_1 \right)}{\gcd(m_1, m_2)} m_1 + \frac{k_2' \left( a_2 - a_1 \right)}{\gcd(m_1, m_2)} m_2 = a_2 - a_1
+$$
+
+This means if we let:
+
+$$
+\begin{cases}
+k_1 = \frac{k_1' \left( a_2 - a_1 \right)}{\gcd(m_1, m_2)} \\\\
+k_2 = -\frac{k_2' \left( a_2 - a_1 \right)}{\gcd(m_1, m_2)}
+\end{cases}
+$$
+
+Then $k_1, k_2$ satisfies $(*)$.
+
+Here's my implementation of the congruence solver:
+```cpp
+// returns lcm(a, b)
+int lcm(int a, int b) {
+  return a/__gcd(a,b) * b;
+}
+ 
+// returns any two integers x, y such that ax + by = gcd(a, b)
+array<int, 2> eGCD(int a, int b) {
+  if (b == 0) return {1, 0};
+  int x = eGCD(b, a % b)[0];
+  int y = eGCD(b, a % b)[1];
+  return {y, x - (a/b) * y};
+}
+  
+/*
+Given a congruence system x = A[0] (mod M[0]), x = A[1] (mod M[1]),... x = A[n-1] (mod M[n-1]),
+this function returns -1 if the system has no solution
+Otherwise, it returns x, where x is a solution to the system
+(In fact, this function returns the smallest non-negative solution to the system.)
+*/
+int solveCongruSystem(vector<int> A, vector<int> M) {
+  int a1 = A[0];
+  int m1 = M[0];
+
+  /* Merge the solution with remaining equations */
+  for (int i = 1; i < A.size(); i++) {
+    /* At this point:
+    - the system consisting of the 0th, 1st, 2nd, ..., (i-1)'th congruences 
+    have been solved, with its solution being stored in the variable a1.
+    - m1 = lcm(M[0], M[1], ..., M[i-1])
+    - the lines of code below will merge the next congruence into the current solution */
+
+    int a2 = A[i];
+    int m2 = M[i];
+
+    // if gcd(m1, m2) doesn't divide (a2 - a1), then the original system has no solution
+    if ((a2 - a1) % __gcd(m1, m2) != 0) return -1;
+
+    int k1 = eGCD(m1, m2)[0];
+
+    k1 = k1 * (a2 - a1) / __gcd(m1, m2);
+    a1 = a1 + k1 * m1;
+    m1 = lcm(m1, m2);
+
+    /* At this point:
+    - the system consisting of the 0th, 1st, 2nd, ..., i'th congruences
+    have been solved, with its solution being stored in the variable a1.
+    - m1 = lcm(M[0], M[1], ..., M[i]) */
+
+    // take a1 modulo m1 to avoid overflow
+    a1 = (a1 % m1 + m1) % m1;
+  }
+
+  return a1;
+}
+
+/* For example this function outputs 34 if A=[1,4,6] and M=[3,5,7]
+because x=34 satisfies the system:
+- x = 1 (mod 3)
+- x = 4 (mod 5)
+- x = 6 (mod 7) */
+
+/* Another example, if A=[2,5,7] and M=[6,9,15], then
+the function returns -1 because no integer satisfies that system */
+```
