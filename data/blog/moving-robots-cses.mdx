@@ -1,0 +1,87 @@
+---
+title: 'Moving Robots CSES Solution'
+date: '2023-08-14'
+tags: ['math', 'probability', 'expected value']
+draft: false
+summary: Interesting Expected Value problem
+---
+
+## Introduction
+
+I couldn't find a satisfactory explanation for this problem. After analyzing code solutions, I think I traced a beautiful thought process. Hope you'll find it beautiful, too!
+
+## Prerequisites
+* Comfortable with expected values
+* Basic Probability
+
+## Solving a simpler problem first
+Let's pretend the chessboard is only $4 \times 4$ instead of $8 \times 8$.
+
+Let $S = \{ (1,1), (1,2), (1,3), \dots, (4,3), (4,4)\}$. $S$ is the set of cells in our $4 \times 4$ board.
+
+Let $X$ be the number of empty squares after $k$ turns. $\mathbb{E}[X]$ is the answer. Notice that $X$ has the following alternative definition:
+
+<div align="center">
+**$X$ is the number of empty squares after $k$ turns given that for each cell in $S$ there's a robot.**
+</div>
+
+![VisualFullProb](/static/images/moving-robots-cses/XFullProb.png)
+
+It wouldn't hurt if we try splitting into subproblems. Do the following variable assignments:
+* Let $X_1$ be the number of empty squares on the top left $2 \times 2$ subsquare after $k$ turns given that for each cell in $S$ there's a robot.
+* Let $X_2$ be the number of empty squares top right $2 \times 2$ subsquare after $k$ turns given that for each cell in $S$ there's a robot.
+* Let $X_3$ be the number of empty squares bottom right $2 \times 2$ subsquare after $k$ turns given that for each cell in $S$ there's a robot.
+* Let $X_4$ be the number of empty squares bottom left $2 \times 2$ subsquare after $k$ turns given that for each cell in $S$ there's a robot.
+
+![VisualSubProb](/static/images/moving-robots-cses/XSubProb.png)
+
+If we split once more for each $2 \times 2$ subsquare above, we'll get $16$ total subproblems about $1 \times 1$ subsquares. Let's try that.
+
+Let $X_{i,j}$ be the number of empty squares at the $1 \times 1$ subsquare at cell $(i,j)$ after $k$ turns given that each cell in $S$ has a robot.
+
+![VisualSubSubProb](/static/images/moving-robots-cses/XSubSubProb.png)
+
+Because of linearity of expectation:
+$$
+\sum_{i=1}^4 \sum_{j=1}^4 \mathbb{E}[X_{i,j}] = \mathbb{E}[X]
+$$
+
+then we would be done if we can calculate each $\mathbb{E}[X_{i,j}]$.
+
+Using the definition of expected value, we have:
+$$
+\mathbb{E}[X_{i,j}] = \sum_{t=0}^1 t \cdot P(\text{cell $(i,j)$ has $t$ robots after $k$ turns $\mid$ each cell in $S$ has a robot}) \\
+= P(\text{cell $(i,j)$ has $1$ robot after $k$ turns $\mid$ each cell in $S$ has a robot}) \\
+= P((i,j,k) \mid S \text{ has robot}) \text{ (erased some words for brevity)}
+$$
+
+Now we need to calculate $P((i,j,k) \mid S \text{ has robot})$. Recall that it is the probability that cell $(i,j)$ has 1 robot after $k$ turns given that each cell in $S$ has a robot.
+
+Because of independence of probability, we can rewrite:
+$$
+P((i,j,k) \mid S \text{ has robot}) = \prod_{t \in S} P((i,j,k) \mid t \text{ has robot})
+$$
+
+We have just reduced the problem to a problem of one robot and one cell. $P((i,j,k) \mid t \text{ has robot})$ is the probability that cell $(i,j)$ has 1 robot after $k$ turns given that only cell $t$ has a robot. This new problem can be solved using DP:
+$$
+P((i,j,k) \mid (i', j') \text{ has robot}) = P((i+1,j,k-1) \mid (i', j') \text{ has robot}) \cdot \frac{1}{4} \\
++ P((i,j+1 ,k-1) \mid (i', j') \text{ has robot}) \cdot \frac{1}{4}\\
++ P((i-1,j ,k-1) \mid (i', j') \text{ has robot}) \cdot \frac{1}{4} \\
++ P((i,j-1 ,k-1) \mid (i', j') \text{ has robot}) \cdot \frac{1}{4}
+$$
+
+Note that the formula above doesn't account for a few edge cases. For example, the $\frac{1}{4}$ is the probability that the robot goes from $(i+1,j)$ to $(i,j)$, $(i,j+1)$ to $(i,j)$, and so on, but the probability that the robot goes from (1,1) to (1,2) is $\frac{1}{2}$.
+
+Now, the formula for the $4 \times 4$ problem is:
+$$
+\mathbb{E}[X] = \sum_{1 \le i, j \le 4} \mathbb{E}[X_{1,1}] = \sum_{1 \le i, j \le 4} P((i,j,k) \mid S \text{ has robot}) \\
+= \sum_{1 \le i, j \le 4} \left[ \prod_{1 \le i', j' \le 4} P((i,j,k) \mid (i', j') \text{ has robot}) \right]
+$$
+
+## Solving the full problem
+Well, the solution for the $4 \times 4$ variant is easily extendable to the original $8 \times 8$ problem:
+$$
+\mathbb{E}[X] = \sum_{1 \le i, j \le 8} \left[ \prod_{1 \le i', j' \le 8} P((i,j,k) \mid (i', j') \text{ has robot}) \right]
+$$
+
+Here's my accepted code: https://cses.fi/problemset/result/6779568/
