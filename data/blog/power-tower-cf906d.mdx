@@ -48,9 +48,9 @@ Therefore, for a query $l, r$, we just need to output $G(l,r,m) \% m$. While it 
 Note that $G(l,r,m)$ requires the value of $G(l+1, r, \phi(m))$, which in turn needs $G(l+2, r, \phi(\phi(m)))$. So we need the sequence $[m, \phi(m), \phi(\phi(m)), \cdots, 1]$. One can show that the sequence's length is at most $O(\log n)$ based on the fact that $\phi(\phi(m)) \le \frac{m}{2}$.
 
 ## Lemma 1 proof
-Before proving this crazy thing, the following lemma is required. Beware that the proof won't isn't clean, as it seems like it is accidentally true.
+Before proving this crazy thing, the following lemma is required. Beware that the proof isn't clean, as it seems like it is accidentally true.
 
-Firstly, note that $\forall a,b: a @ b \le b$. Secondly, let's prove this lemma first:  
+Firstly, note that $\forall a,b: a @ b \le a$. Secondly, let's prove this lemma first:  
 $$
 \textbf{Lemma 1: } \forall a, b, m: a^{b @ \phi(m)} = a^b @ m
 $$
@@ -71,7 +71,7 @@ $$
   Therefore, $a < 2$, meaning $a = 1$. The theorem obviously satisfies with $a=1$.
 
 * ## Case 2: $a^b < 4m, a^{b @ \phi(m)} \ge 4m$
-  Since $b @ \phi(m) \le \Rightarrow a^{b @ \phi(m)} \le a^b$. So this case never occurs.
+  Since $b @ \phi(m) \le b \Rightarrow a^{b @ \phi(m)} \le a^b$. So this case never occurs.
 
 * ## Case 3: $a^b \ge 4m, a^{b @ \phi(m)} \ge 4m$
   Note that $a^b \% m = a^{b @ \phi(m)} \% m$. So this case automatically satisfies.
