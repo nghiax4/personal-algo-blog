@@ -40,7 +40,7 @@ $$
 
 The crazy theorem is this:
 $$
-G(l,r,m) \equiv w_l^{w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}}} \pmod m
+G(l,r,m) \equiv w_l^{w_{l+1}^{w_{l+2}^{ {\cdots}^{w_r}}}} \pmod m
 $$
 
 Therefore, for a query $l, r$, we just need to output $G(l,r,m) \% m$. While it is true that the recursive function's base case is $l = r$, we can make the it return much sooner.
@@ -84,19 +84,19 @@ Q.E.D.
 ## Theorem proof
 Let's use induction.
 
-Let $P(l)$ be the statement "$\forall m: G(l,r,m) = \left( w_l^{w_{l+1}^{{\cdots}^{w_r}}} \right) @ m$".
+Let $P(l)$ be the statement "$\forall m: G(l,r,m) = \left( w_l^{w_{l+1}^{ {\cdots}^{w_r}}} \right) @ m$".
 
 Base case: $P(l=r)$, which is trivially true.
 
 Now let's provee $P(l)$ given $P(l+1)$. We have:
 $$
-P(l+1) \Rightarrow G(l+1, r, \phi(m)) = \left( w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}} \right) @ \phi(m) \\
-\Rightarrow G(l,r,m) = w_l^{G(l+1, r, \phi(m))} = w_l ^ {\left( w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}} \right) @ \phi(m)} @ m
+P(l+1) \Rightarrow G(l+1, r, \phi(m)) = \left( w_{l+1}^{w_{l+2}^{ {\cdots}^{w_r}}} \right) @ \phi(m) \\
+\Rightarrow G(l,r,m) = w_l^{G(l+1, r, \phi(m))} = w_l ^ {\left( w_{l+1}^{w_{l+2}^{ {\cdots}^{w_r}}} \right) @ \phi(m)} @ m
 $$
 
 Because of Lemma 1, this implies:
 $$
-G(l,r,m) = w_l ^ {\left( w_{l+1}^{w_{l+2}^{{\cdots}^{w_r}}} \right) @ \phi(m)} @ m = \left( w_l^{w_{l+1}^{{\cdots}^{w_r}}} \right) @ m
+G(l,r,m) = w_l ^ {\left( w_{l+1}^{w_{l+2}^{ {\cdots}^{w_r}}} \right) @ \phi(m)} @ m = \left( w_l^{w_{l+1}^{ {\cdots}^{w_r}}} \right) @ m
 $$
 
 Q.E.D.
