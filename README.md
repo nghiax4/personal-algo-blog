@@ -344,7 +344,7 @@ export const SearchProvider = ({ children }) => {
   const router = useRouter()
   return (
     <KBarSearchProvider
-      kbarConfig={{
+      kbarConfig={ {
         searchDocumentsPath: 'search.json',
         defaultActions: [
           {
